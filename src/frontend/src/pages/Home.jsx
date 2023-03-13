@@ -1,6 +1,6 @@
 // Página de início
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect} from "react";
 
 import Sidebar from "../components/Sidebar"
 import startButton from '../assets/startButton.png'
@@ -17,14 +17,79 @@ import seeMore from '../assets/seeMoreArrow.png'
 function Home() {
     // Definição de hooks
     const [intensity, setIntensity] = useState([0, 12])
-    const [cycle, setCycle] = useState(0)
-    const [status, setStatus] = useState(0)
+    const [cycleCount, setCycleCount] = useState(0)
+    const [magnetState, setMagnetState] = useState(false); 
+    const [pumpState, setPumpState] = useState(0);
+    //const [status, setStatus] = useState(0)
     const detailsRef = useRef();
+
+    // Declaração do endereço do servidor atual
+    const serverHost = "http://10.128.20.240:5000";
 
     // Desliza tela para card de detalhes
     function showDetails() {
         detailsRef.current.scrollIntoView({ behavior: 'smooth'});
     }
+
+    // Faz requisição ao servidor para trocar estado e atualiza estado local
+    const toggleMagnet = () => {
+        fetch(serverHost + "/toggle_magnet", {
+            method: "POST",
+            body: JSON.stringify({
+                magnet_state: !magnetState
+            }),
+            headers: { "Content-type": "application/json;charset=UTF-8" },
+        })
+            .then((response) => response.json())
+            .then((data) => console.log(data));
+
+        setMagnetState(!magnetState)
+    };
+
+    // Faz requisição ao servidor para trocar estado e atualiza estado local
+    const togglePump = () => {
+        fetch(serverHost + "/toggle_pump", {
+            method: "POST",
+            body: JSON.stringify({
+                pump_state: !pumpState
+            }),
+            headers: { "Content-type": "application/json;charset=UTF-8" },
+        })
+            .then((response) => response.json())
+            .then((data) => console.log(data));
+
+        setPumpState(!pumpState)
+    };
+
+    // Faz requisição ao servidor para ler valor e atualiza estado local
+    const getCycleCount = () => {
+        Axios.get(serverHost + "/cycleCount").then((res) => {
+            setCycleCount(res.data);
+        }); // Atualiza estado com o valor lido
+    };
+
+    const getStates = () => {
+        fetch(serverHost + '/states')
+            .then(res => res.json())
+            .then(data => {
+                setMagnetState(Number.parseInt(data.magnet))
+                setPumpState(Number.parseInt(data.pump))
+            })
+    }
+
+    // Executa funções para atualizar estados
+    const updateData = () => {
+        getCycleCount();
+        getStates();
+    };
+
+    // Hook para atualizar dados regularmente (a cada 1 segundo)
+    useEffect(() => {
+        const myInterval = setInterval(updateData, 1000); // Cria intervalo e chama função desejada
+        return () => {
+            clearInterval(myInterval); // Reinicia o intervalo
+        };
+    }, []);
 
     return (
         <div className="w-full h-screen">
@@ -36,12 +101,12 @@ function Home() {
                     {/* Botão de iniciar ensaio */}
                     <button><img className="hover:scale-105" src={startButton} /></button>
                     <div>
-                        <h1 className="text-3xl font-bold mb-5">Novo ensaio</h1>
+                        <h1 className="text-3xl font-bold mb-5 font-montserrat">Novo ensaio</h1>
                         <div className="flex">
 
                             {/* Grupo de inputs de informações */}
                             <div className="pr-5 pl-2 flex flex-col justify-between">
-                                <p className="text-slate-500 small-caps">INFORMAÇÕES</p>
+                                <p className="text-slate-500 small-caps font-montserrat">INFORMAÇÕES</p>
                                 <Input title='amostra' />
                                 <Input title='cliente' />
                                 <Input title='peso' />
@@ -52,28 +117,28 @@ function Home() {
 
                             {/* Grupo de controles */}
                             <div className="pr-5 pl-2 w-96 flex flex-col justify-between gap-4">
-                                <p className="text-slate-500 small-caps">CONTROLES</p>
+                                <p className="text-slate-500 small-caps font-montserrat">CONTROLES</p>
 
                                 <span className="flex gap-5 justify-around">
                                     <button><img className="w-9" src={turnOnIcon}></img></button>
-                                    <button><img className="w-9" src={magnetIcon}></img></button>
-                                    <button><img className="w-9" src={pumpIcon}></img></button>
+                                    <button><img className="w-9" src={magnetIcon} onClick={toggleMagnet}></img></button>
+                                    <button><img className="w-9" src={pumpIcon} onClick={togglePump}></img></button>
                                 </span>
 
-                                <p className="font-bold">Intensidade do ímã: </p>
+                                <p className="font-bold font-montserrat">Intensidade do ímã: </p>
 
-                                <span id="sliderWrapper" className="flex gap-2 items-center justify-center">
+                                <span id="sliderWrapper" className="flex gap-2 items-center justify-center font-montserrat">
                                     {/* Slider */}
                                     <RangeSlider min={0} max={12} thumbsDisabled={[true, false]} value={intensity} onInput={setIntensity} />
                                     <p>{intensity[1] + 'V'}</p>
                                 </span>
 
                                 <span className="flex gap-2">
-                                    <p className="font-bold">Ciclo: </p>
-                                    <p>Nº DE CICLOS</p>
+                                    <p className="font-bold font-montserrat">Ciclo: </p>
+                                    <p className="font-montserrat">{cycleCount}</p>
                                 </span>
 
-                                <span className="flex gap-2">
+                                <span className="flex gap-2 font-montserrat">
                                     <p className="font-bold">Status: </p>
                                     <p>BANDEJA ATUAL</p>
                                 </span>
