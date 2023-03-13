@@ -55,9 +55,9 @@ function Home() {
                                 <p className="text-slate-500 small-caps">CONTROLES</p>
 
                                 <span className="flex gap-5 justify-around">
-                                    <button><img className="w-9" src={turnOnIcon}></img></button>
-                                    <button><img className="w-9" src={magnetIcon}></img></button>
-                                    <button><img className="w-9" src={pumpIcon}></img></button>
+                                    <button className="hover:scale-105"><img className="w-9" src={turnOnIcon}></img></button>
+                                    <button className="hover:scale-105"><img className="w-9" src={magnetIcon}></img></button>
+                                    <button className="hover:scale-105"><img className="w-9" src={pumpIcon}></img></button>
                                 </span>
 
                                 <p className="font-bold">Intensidade do ímã: </p>
