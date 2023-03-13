@@ -3,7 +3,7 @@ outros páginas da pasta "pages".
 */
 
 // Importa recursos necessários
-import { Routes, Route, HashRouter, BrowserRouter } from 'react-router-dom'; // Importa recursos de rotas
+import { Routes, Route, BrowserRouter as Router, BrowserRouter } from 'react-router-dom'; // Importa recursos de rotas
 
 // Páginas
 import History from './pages/History';
@@ -15,7 +15,7 @@ import Sidebar from './components/Sidebar';
 function App() {
   return (
     <div>
-      <BrowserRouter basename="/index.html"> {/* Define o roteador */}
+      <BrowserRouter> {/* Define o roteador */}
         <Routes> 
           <Route path='/' element={<Home />} /> {/* Define a rota inicial */}
           <Route path='/demo' element={<Demo />} /> {/* Define a rota para a página de demonstração */}
