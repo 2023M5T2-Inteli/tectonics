@@ -120,9 +120,9 @@ function Home() {
                                 <p className="text-slate-500 small-caps font-montserrat">CONTROLES</p>
 
                                 <span className="flex gap-5 justify-around">
-                                    <button><img className="w-9" src={turnOnIcon}></img></button>
-                                    <button><img className="w-9" src={magnetIcon}></img></button>
-                                    <button><img className="w-9" src={pumpIcon}></img></button>
+                                    <button><img className="w-9 hover:scale-105" src={turnOnIcon}></img></button>
+                                    <button><img className="w-9 hover:scale-105" src={magnetIcon} onClick={toggleMagnet}></img></button>
+                                    <button><img className="w-9 hover:scale-105" src={pumpIcon} onClick={togglePump}></img></button>
                                 </span>
 
                                 <p className="font-bold font-montserrat">Intensidade do ímã: </p>
